@@ -1,10 +1,17 @@
 import axios from 'axios';
 
+
 const API_URL = 'http://localhost:8080';
 
+
 export const fetchTasks = async () => {
+    const token = localStorage.getItem('jwtToken');
     try {
-        const response = await axios.get(`${API_URL}/tasks`);
+        const response = await axios.get(`${API_URL}/tasks`,  {
+            headers: {
+                'Authorization': `Bearer ${token}` // Include the JWT token in the request headers
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -13,9 +20,14 @@ export const fetchTasks = async () => {
 };
 
 export const addTask = async (task) => {
+    const token = localStorage.getItem('jwtToken');
     try {
-        const response = await axios.post(`${API_URL}/tasks`, task);
-        return response.data;
+    const response = await axios.post(`${API_URL}/tasks`, task, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Include the JWT token in the request headers
+      }
+    });
+    return response.data
     } catch (error) {
         console.error('Error adding task:', error);
         throw error;

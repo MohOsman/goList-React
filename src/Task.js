@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './TodoApp.css';
 import { fetchTasks, addTask, deleteTask, updateTaskCompletion } from './services/taskService';
 import TodoList from './components/TodoList';
@@ -7,6 +8,7 @@ function Task() {
   const [tasks, setTasks] = useState([]);
   const [inputTitle, setInputTitle] = useState('');
   const [inputDescription, setInputDescription] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTasksData();
@@ -30,12 +32,12 @@ function Task() {
           description: inputDescription.trim(),
           isDone: false,
         };
-        // maybe add some error handling here 
-         await addTask(newTask);
+        // maybe add some error handling here
+        await addTask(newTask);
         await fetchTasksData();
         setInputTitle('');
         setInputDescription('');
-        e.target.reset()
+        e.target.reset();
       } catch (error) {
         console.error('Error adding task:', error);
       }
@@ -70,6 +72,12 @@ function Task() {
     }
   };
 
+  const handleLogout = () => {
+    // Perform logout logic here
+    localStorage.removeItem('jwtToken');
+    navigate('/login');
+  };
+
   const handleTitleChange = (e) => {
     setInputTitle(e.target.value);
   };
@@ -80,6 +88,11 @@ function Task() {
 
   return (
     <div className="app">
+      <div className="logout-container">
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
       <h1>Task List</h1>
       <form onSubmit={handleFormSubmit}>
         <input
@@ -95,19 +108,21 @@ function Task() {
           placeholder="Enter a description"
           className="input-field"
         />
-        <button type="submit" className="add-button">Add Task</button>
+        <button type="submit" className="add-button">
+          Add Task
+        </button>
       </form>
-      {tasks && tasks.length > 0 ? (
-        <TodoList
-          tasks={tasks}
-          onDelete={handleTaskDelete}
-          onCompletionChange={handleTaskCompletionChange}
-        />
-      ) : (
-        <p>No tasks found.</p>
-      )}
+        {tasks && tasks.length > 0 ? (
+            <TodoList
+                tasks={tasks}
+                onDelete={handleTaskDelete}
+                onCompletionChange={handleTaskCompletionChange}
+            />
+            ) : (
+                <p>No tasks found.</p>
+                )}
     </div>
-  );
+    );
 }
 
 export default Task;

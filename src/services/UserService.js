@@ -14,10 +14,10 @@ export const register = async (user) => {
     }
 };
 
-export const login = async (user) => {
+export const login = async (user)  => {
     try {
-        const response = await axios.post(`${API_URL}/login`, user);
-        return response.data;
+       return  await axios.post(`${API_URL}/login`, user)  
+
     } catch (error) {
         console.error('Error creating user:', error);
         throw error;
